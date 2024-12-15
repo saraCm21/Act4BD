@@ -70,8 +70,8 @@ public class Asistente {
     }
 
     public String toScript() {
-        return "Asistente [ID=" + id + ", Nombre=" + nombre + ", Apellido=" + apellido +
-               ", Institucion=" + institucion + ", Correo=" + correo + ", Numero=" + numero + "]";
+        return "Asistente ID: " + id + "\n" + "Nombre: " + nombre + "\n" + "Apellido: " + apellido + "\n" + 
+               "Institucion: " + institucion + "\n" + "Correo: " + correo + "\n" + "Numero: " + numero + "\n";
     }
 
 }   
