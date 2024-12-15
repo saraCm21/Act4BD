@@ -1,9 +1,16 @@
 package conexionBd;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import CRUD.Asistente_Crud;
+import CRUD.Autor_Crud;
 import Clases.Asistente;
+import Clases.Autor;
 
 public class principal {
     private static Scanner scanner;
@@ -22,7 +29,11 @@ public class principal {
             System.out.println("2. Editar Asistente");
             System.out.println("3. Eliminar Asistente");
             System.out.println("4. Buscar Asistente");
-            System.out.println("5. Salir");
+            System.out.println("5. Agregar Autor");
+            System.out.println("6. Eliminar Autor");
+            System.out.println("7. Buscar");
+            System.out.println("8. Mostrar listado de aistentes");
+            System.out.println("9. Salir");
             System.out.print("Seleccione una opción: ");
             opcion = scanner.nextInt();
             scanner.nextLine();
@@ -41,6 +52,18 @@ public class principal {
                     buscarAsistente();
                     break;
                 case 5:
+                    agregarAutor();
+                    break;
+                case 6:
+                    eliminarAutor();
+                    break;
+                 case 7:
+                    buscar();
+                    break;
+                 case 8:
+                     mostrarAsistentes();
+                     break;
+                case 9:
                     System.out.println("Saliendo...");
                     break;
                 default:
@@ -194,6 +217,63 @@ public class principal {
     
     private void buscarAsistente() {
 		asistente_crud.buscarAsistentes();
+
+	}
+    
+    private void agregarAutor() {
+		
+    	System.out.print("Ingrese el rol del autor: ");
+        String rol = scanner.next();
+
+        System.out.print("Ingrese el ID del asistente: ");
+        int asistenteId = scanner.nextInt();
+
+        Autor nuevoAutor = new Autor(rol, asistenteId);
+
+        Autor_Crud.agregarAutor(nuevoAutor);
+        System.out.println("Autor agregado exitosamente.");
+
+	}
+    
+    private void eliminarAutor() {
+        System.out.print("Ingrese el ID del autor a eliminar: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        Autor_Crud.eliminarAutor(id);
+        System.out.println("Autor eliminado exitosamente.");
+    }
+    
+    private void buscar() {
+    	System.out.print("Ingrese el ID del autor a buscar: ");
+        int id = scanner.nextInt();
+
+        Autor_Crud.buscarAutorConAsistente(id);
+	}
+    
+    private void mostrarAsistentes() {
+    	List<Asistente> resultados = new ArrayList<>();
+        String sql = "SELECT * FROM asistente";
+        try (Connection conectar = new Conexion().getConexion();
+        	PreparedStatement stmt = conectar.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                resultados.add(new Asistente(
+                    rs.getInt("id"),
+                    rs.getString("nombre"),
+                    rs.getString("apellido"),
+                    rs.getString("institucion"),
+                    rs.getString("correo"),
+                    rs.getString("numero")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        for (Asistente asistente : resultados) {
+			System.out.println(asistente.toScript());
+			System.out.println();
+		}
 
 	}
     
